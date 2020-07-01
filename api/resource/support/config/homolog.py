@@ -1,0 +1,1 @@
+HOST_BASE = "http://api.openweathermap.org/data/2.5"

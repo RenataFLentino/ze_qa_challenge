@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 3.1.2 (Python 3.8.3 on win32)" generated="20200701 13:17:14.436" rpa="false">
+<suite id="s1" name="Tests" source="C:\Users\Usuário Groove\Desktop\ze_qa_challenge\api\tests">
+<suite id="s1-s1" name="Weather" source="C:\Users\Usuário Groove\Desktop\ze_qa_challenge\api\tests\weather.robot">
+<test id="s1-s1-t1" name="Scenario: Buscar dados meteorológicos pelo nome da cidade">
+<kw name="Quando realizar um GET para consultar as condições meteorológicas na cidade" library="kw_weather">
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>q=${city}</arg>
+<arg>appid=${API_KEY}</arg>
+</arguments>
+<assign>
+<var>&amp;{params}</var>
+</assign>
+<msg timestamp="20200701 13:17:14.692" level="INFO">&amp;{params} = { q=Rio de Janeiro | appid=7f16c2824ce75a49072fba63c330755b }</msg>
+<status status="PASS" starttime="20200701 13:17:14.691" endtime="20200701 13:17:14.692"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>${SESSION}</arg>
+<arg>${HOST_BASE}</arg>
+<arg>headers=${HEADER}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:14.692" level="INFO">Creating Session using : alias=weather, url=http://api.openweathermap.org/data/2.5, headers={'Content-Type': 'application/json'},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20200701 13:17:14.692" endtime="20200701 13:17:14.692"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>${SESSION}</arg>
+<arg>${WEATHER_ENDPOINT}</arg>
+<arg>params=${params}</arg>
+<arg>headers=${HEADER}</arg>
+</arguments>
+<assign>
+<var>${RESPONSE}</var>
+</assign>
+<msg timestamp="20200701 13:17:15.206" level="INFO">Get Request using : alias=weather, uri=weather, headers={'Content-Type': 'application/json'} json=None</msg>
+<msg timestamp="20200701 13:17:15.207" level="INFO">${RESPONSE} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20200701 13:17:14.692" endtime="20200701 13:17:15.207"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${RESPONSE}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.209" level="INFO">${RESPONSE} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20200701 13:17:15.208" endtime="20200701 13:17:15.209"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:14.691" endtime="20200701 13:17:15.209"></status>
+</kw>
+<kw name="Então validar a lista de parâmetros climáticos" library="kw_weather">
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Response: ${RESPONSE.text}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.210" level="INFO">Response: {"coord":{"lon":-43.21,"lat":-22.9},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04d"}],"base":"stations","main":{"temp":301.7,"feels_like":300.22,"temp_min":301.15,"temp_max":302.15,"pressure":1007,"humidity":42},"visibility":10000,"wind":{"speed":4.1,"deg":300},"clouds":{"all":97},"dt":1593619676,"sys":{"type":1,"id":8429,"country":"BR","sunrise":1593596046,"sunset":1593634749},"timezone":-10800,"id":3451190,"name":"Rio de Janeiro","cod":200}</msg>
+<status status="PASS" starttime="20200701 13:17:15.210" endtime="20200701 13:17:15.210"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Response: ${RESPONSE.text}</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.210" endtime="20200701 13:17:15.216"></status>
+</kw>
+<kw name="Should Not Be Empty" library="BuiltIn">
+<doc>Verifies that the given item is not empty.</doc>
+<arguments>
+<arg>${RESPONSE.json()}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.216" level="INFO">Length is 13</msg>
+<status status="PASS" starttime="20200701 13:17:15.216" endtime="20200701 13:17:15.216"></status>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<arguments>
+<arg>${RESPONSE.json()}</arg>
+<arg>id</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.216" endtime="20200701 13:17:15.217"></status>
+</kw>
+<kw name="Dictionary Should Contain Item" library="Collections">
+<doc>An item of ``key`` / ``value`` must be found in a ``dictionary``.</doc>
+<arguments>
+<arg>${RESPONSE.json()}</arg>
+<arg>name</arg>
+<arg>${city}</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.217" endtime="20200701 13:17:15.217"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:15.209" endtime="20200701 13:17:15.218"></status>
+</kw>
+<kw name="E código de resposta &quot;200&quot;" library="kw_commons">
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>${expected_status}</arg>
+<arg>"${RESPONSE.status_code}"</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.219" endtime="20200701 13:17:15.219"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:15.218" endtime="20200701 13:17:15.219"></status>
+</kw>
+<tags>
+<tag>busca_cidade</tag>
+<tag>weather</tag>
+</tags>
+<status status="PASS" starttime="20200701 13:17:14.690" endtime="20200701 13:17:15.219" critical="yes"></status>
+</test>
+<test id="s1-s1-t2" name="Scenario: Buscar dados meteorológicos pelo nome da cidade com api key inválida">
+<kw name="Quando realizar um GET para consultar as condições meteorológicas na cidade com api key inválida" library="kw_weather">
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>q=${city}</arg>
+<arg>appid=${API_KEY_INCORRETA}</arg>
+</arguments>
+<assign>
+<var>&amp;{params}</var>
+</assign>
+<msg timestamp="20200701 13:17:15.222" level="INFO">&amp;{params} = { q=Rio de Janeiro | appid=7f16c2824ce75a49072fba63c33075676 }</msg>
+<status status="PASS" starttime="20200701 13:17:15.222" endtime="20200701 13:17:15.222"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>${SESSION}</arg>
+<arg>${HOST_BASE}</arg>
+<arg>headers=${HEADER}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.222" level="INFO">Creating Session using : alias=weather, url=http://api.openweathermap.org/data/2.5, headers={'Content-Type': 'application/json'},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20200701 13:17:15.222" endtime="20200701 13:17:15.223"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>${SESSION}</arg>
+<arg>${WEATHER_ENDPOINT}</arg>
+<arg>params=${params}</arg>
+<arg>headers=${HEADER}</arg>
+</arguments>
+<assign>
+<var>${RESPONSE}</var>
+</assign>
+<msg timestamp="20200701 13:17:15.702" level="INFO">Get Request using : alias=weather, uri=weather, headers={'Content-Type': 'application/json'} json=None</msg>
+<msg timestamp="20200701 13:17:15.703" level="INFO">${RESPONSE} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20200701 13:17:15.223" endtime="20200701 13:17:15.703"></status>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<arguments>
+<arg>${RESPONSE}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.705" level="INFO">${RESPONSE} = &lt;Response [401]&gt;</msg>
+<status status="PASS" starttime="20200701 13:17:15.704" endtime="20200701 13:17:15.705"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:15.221" endtime="20200701 13:17:15.705"></status>
+</kw>
+<kw name="Então validar mensagem de erro para api key inválida" library="kw_weather">
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Response: ${RESPONSE.text}</arg>
+</arguments>
+<msg timestamp="20200701 13:17:15.707" level="INFO">Response: {"cod":401, "message": "Invalid API key. Please see http://openweathermap.org/faq#error401 for more info."}</msg>
+<status status="PASS" starttime="20200701 13:17:15.707" endtime="20200701 13:17:15.707"></status>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<doc>Logs the given message to the console.</doc>
+<arguments>
+<arg>Response: ${RESPONSE.text}</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.707" endtime="20200701 13:17:15.708"></status>
+</kw>
+<kw name="Dictionary Should Contain Item" library="Collections">
+<doc>An item of ``key`` / ``value`` must be found in a ``dictionary``.</doc>
+<arguments>
+<arg>${RESPONSE.json()}</arg>
+<arg>message</arg>
+<arg>${key_invalid}</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.708" endtime="20200701 13:17:15.709"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:15.706" endtime="20200701 13:17:15.709"></status>
+</kw>
+<kw name="E código de resposta &quot;401&quot;" library="kw_commons">
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>${expected_status}</arg>
+<arg>"${RESPONSE.status_code}"</arg>
+</arguments>
+<status status="PASS" starttime="20200701 13:17:15.710" endtime="20200701 13:17:15.710"></status>
+</kw>
+<status status="PASS" starttime="20200701 13:17:15.709" endtime="20200701 13:17:15.710"></status>
+</kw>
+<tags>
+<tag>busca_cidade_api_key_invalida</tag>
+<tag>weather</tag>
+</tags>
+<status status="PASS" starttime="20200701 13:17:15.221" endtime="20200701 13:17:15.710" critical="yes"></status>
+</test>
+<status status="PASS" starttime="20200701 13:17:14.458" endtime="20200701 13:17:15.712"></status>
+</suite>
+<status status="PASS" starttime="20200701 13:17:14.437" endtime="20200701 13:17:15.727"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="2" fail="0">Critical Tests</stat>
+<stat pass="2" fail="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0">busca_cidade</stat>
+<stat pass="1" fail="0">busca_cidade_api_key_invalida</stat>
+<stat pass="2" fail="0">weather</stat>
+</tag>
+<suite>
+<stat pass="2" fail="0" id="s1" name="Tests">Tests</stat>
+<stat pass="2" fail="0" id="s1-s1" name="Weather">Tests.Weather</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
